@@ -1,0 +1,2 @@
+Script that will extract the value of a SAM tag and output a fasta file with
+the QNAME as the fasta header and the value of the requested tag as sequence.
