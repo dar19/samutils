@@ -1,6 +1,6 @@
 `sam-add-tag-from-fastq`: adds a tag to each SAM record with the corresponding sequence from a FASTQ file.
 
-`sam-count-secondary`: adds a tag to each primary SAM record with the count of equal secondary mappings.
+`sam-count-secondary`: counts and adds a tag with the number of alignments for each read.
 
 `sam-mark-dups`: finds SAM records with the same start and end position and marks them as duplicates.
 

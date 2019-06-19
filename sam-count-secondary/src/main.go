@@ -13,7 +13,7 @@ import (
 )
 
 // VERSION defines the program version.
-const VERSION = "0.1"
+const VERSION = "0.2"
 
 // Opts is the struct with the options that the program accepts.
 // Opts encapsulates common command line options.
@@ -28,7 +28,7 @@ func (Opts) Version() string { return "sam-count-secondary " + VERSION }
 
 // Description returns an extended description of the program.
 func (Opts) Description() string {
-	return "Counts and adds a tag with the number of equally scored alignments for each read. Currently it supports only BAM files sorted by QNAME."
+	return "Counts and adds a tag with the number of alignments for each read. Currently it supports only BAM files sorted by QNAME. Rules are not well defined as to how supplementary/chimeric alignments should be handled. Currently chimeric alignments are handled like any other alignment and are counted as secondary"
 }
 
 func main() {
@@ -75,6 +75,7 @@ func main() {
 	// Loop on the SAM/BAM file.
 	samBlk := make([]*sam.Record, 0)
 	currName := ""
+	warnedOnce := false
 	for {
 		r, err := br.Read()
 		if err != nil {
@@ -82,6 +83,12 @@ func main() {
 				break
 			}
 			log.Fatalf("error reading SAM: %v", err)
+		}
+		// Warn for supplementary/chimeric alignments because it is not well
+		// defined how these should be handled.
+		if _, ok := r.Tag([]byte("SA")); ok && !warnedOnce {
+			log.Print("warning: not optimized to handle supplementary/chimeric alignments; consider filtering out records with SA tag")
+			warnedOnce = true
 		}
 
 		if currName == "" || r.Name == currName {
@@ -102,28 +109,13 @@ func main() {
 }
 
 func processBlk(samBlk []*sam.Record, w *sam.Writer, tag string) {
-	bestMapQ := samBlk[0].MapQ
+	cnt := len(samBlk)
 	for _, pr := range samBlk {
-		if pr.MapQ > bestMapQ {
-			bestMapQ = pr.MapQ
+		aux, err := sam.NewAux(sam.NewTag(tag), cnt)
+		if err != nil {
+			log.Fatalf("failed to create aux tag for %s: %v ", pr.Name, err)
 		}
-	}
-
-	bestCnt := 0
-	for _, pr := range samBlk {
-		if pr.MapQ == bestMapQ {
-			bestCnt++
-		}
-	}
-
-	for _, pr := range samBlk {
-		if pr.MapQ == bestMapQ {
-			aux, err := sam.NewAux(sam.NewTag(tag), bestCnt)
-			if err != nil {
-				log.Fatalf("failed to create aux tag for %s: %v ", pr.Name, err)
-			}
-			pr.AuxFields = append(pr.AuxFields, aux)
-		}
+		pr.AuxFields = append(pr.AuxFields, aux)
 
 		if err := w.Write(pr); err != nil {
 			log.Fatalf("write failed: %v for %s", err, pr.Name)
