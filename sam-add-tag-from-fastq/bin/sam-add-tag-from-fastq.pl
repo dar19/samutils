@@ -12,7 +12,7 @@ my ($opt, $usage) = describe_options(
 	[],
 	['input=s', "input SAM file; reads from STDIN if \"-\"", {required => 1}],
 	['fastq=s', "input FASTQ file; reads from STDIN if \"-\"", {required => 1}],
-	['tag|t=s', 'new tag that is populated by FASTQ sequences (Default: UX:Z).', {default => "UX:Z"}],
+	['tag|t=s', "new tag that is populated by FASTQ sequences", {required => 1}],
 	['verbose|v', "print progress"],
 	['help|h', 'print usage and exit', {shortcircuit => 1}],
 );
