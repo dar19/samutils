@@ -13,12 +13,14 @@ my ($opt, $usage) = describe_options(
 	['input=s', "input SAM file; reads from STDIN if \"-\"", {required => 1}],
 	['fastq=s', "input FASTQ file; reads from STDIN if \"-\"", {required => 1}],
 	['tag|t=s', "new tag that is populated by FASTQ sequences", {required => 1}],
+	['tag-val=s', "if set, the new tag is populated with this value instead of FASTQ sequences"],
 	['verbose|v', "print progress"],
 	['help|h', 'print usage and exit', {shortcircuit => 1}],
 );
 print($usage->text), exit if $opt->help;
 
 my $new_tag = $opt->tag;
+my $new_tag_val = $opt->tag_val;
 
 if ($opt->input eq '-' and $opt->fastq eq '-') {
 	die "Cannot read from STDIN for both \'input\' and \'fastq\'\n";
@@ -57,7 +59,11 @@ while (my $line = $SAM->getline) {
 	my ($qname) = $fields[0];
 
 	if (exists $seqs{$qname}) {
-		push @fields, join(':', $new_tag, $seqs{$qname});
+		if (defined $new_tag_val) {
+			push @fields, join(':', $new_tag, $new_tag_val);
+		} else {
+			push @fields, join(':', $new_tag, $seqs{$qname});
+		}
 	}
 
 	say join("\t", @fields);
