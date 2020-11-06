@@ -13,7 +13,7 @@ parser.add_argument("-v", "--opt-col-val", help="Value for the optional column; 
 parser.add_argument("-d", "--delim", default="\t", help="Delimiter to seperate the columns of the output file, default : TAB")
 args = parser.parse_args()
 
-ifiletype = "rb" #default for sam format
+ifiletype = "rb"
 if args.sam:
     ifiletype = "r"
 
