@@ -2,24 +2,22 @@
 import pysam
 import argparse
 
-parser = argparse.ArgumentParser(description='Count reads from sam/bam file')
+parser = argparse.ArgumentParser(description='Count reads aligned on each reference sequence in a SAM/BAM file')
 parser.add_argument("-i", "--ifile", help="Seq file name with read information as input in sam/bam format ")
-parser.add_argument("-f", "--fileformat", default="bam", help="File format of input file - either sam or bam; default is for bam format (rb)")
-parser.add_argument("-c", "--ref-col-name", default="reference", help="Header of column wih references, default: reference")
-parser.add_argument("-d", "--cnt-col-name", default="count", help="Header of column with read count per reference, default")
-parser.add_argument("-g", "--opt-col-name", help="Header of optional column for sample/library name")
-parser.add_argument("-l", "--opt-col-val", help="Value of optional column for sample/library name")
-parser.add_argument("-s", "--delim", default="\t", help="Delimiter to seperate the columns of the output file, default : TAB")
-parser.add_argument("-o", "--ofile", help="Column wise output file with Tab seperated output filename of your choice")
+parser.add_argument("-s", "--sam", default="sam", action='store_true',
+    help="Input file format, either sam or bam; default sam format")
+parser.add_argument("-r", "--ref-col-name", default="reference", help="Name of output column with reference ids, default: reference")
+parser.add_argument("-c", "--cnt-col-name", default="count", help="Name of output column with read count, default: count")
+parser.add_argument("-n", "--opt-col-name", help="Name of an optional column e.g. sample_name")
+parser.add_argument("-v", "--opt-col-val", help="Value for the optional column; same for all rows")
+parser.add_argument("-d", "--delim", default="\t", help="Delimiter to seperate the columns of the output file, default : TAB")
 args = parser.parse_args()
 
-ifiletype = "rb" #default for bam format
-if args.fileformat == "sam":
+ifiletype = "rb" #default for sam format
+if args.sam:
     ifiletype = "r"
 
 bamfile = pysam.AlignmentFile(args.ifile, ifiletype)
-#bamfile = pysam.AlignmentFile(args.ifile, ifiletype, check_sq=False, check_header=False)
-#bamfile = pysam.AlignmentFile(args.ifile, "r", check_sq=False)
 
 reference_counts = {}
 for seq in bamfile:
@@ -33,13 +31,16 @@ for seq in bamfile:
     reference_counts[reference] += 1
 
 delim = args.delim
-if args.opt_col_name and args.opt_col_val:
-    print(delim.join([args.ref_col_name, args.cnt_col_name, args.opt_col_name]) + "\n")
-else:
-    print(delim.join([args.ref_col_name, args.cnt_col_name]) + "\n")
 
+#print the header of file
+header = [args.ref_col_name, args.cnt_col_name]
+if args.opt_col_name and args.opt_col_val:
+    header += [args.opt_col_name]
+print(delim.join(header) + "\n")
+
+#print the contents (reference and counts) of file
 for reference, count in reference_counts.items():
+    row = [reference, str(count)]
     if args.opt_col_name and args.opt_col_val:
-        print(reference + delim + str(count) + delim + args.opt_col_val + "\n")
-    else:
-        print(reference + delim + str(count) + "\n")
+        row += args.opt_col_val
+    print(delim.join(row))
