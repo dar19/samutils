@@ -1,28 +1,25 @@
-"sam-per-ref-count.py" counts reads in sab or bam files.
+"sam-per-ref-count.py"
+Description : Count reads aligned on reference sequence in a SAM/BAM file.
 Below options are used as arguments in the script.
 
--i IFILE, --ifile IFILE
-                        Seq file name with read information as input in
-                        sam/bam format
-  -f FILEFORMAT, --fileformat FILEFORMAT
-                        File format of input file - either sam or bam; default
-                        is for bam format (rb)
-  -c COLUMN1, --column1 COLUMN1
-                        Header of first output column wih reference names,
-                        default: reference
-  -d COLUMN2, --column2 COLUMN2
-                        Header of second output column wih No of counts per
-                        reference, default : count
-  -g COLUMN3, --column3 COLUMN3
-                        Header of fourth output column wih name of sample
-                        library, default : sample
-  -l LIBRARY_NAME, --library_name LIBRARY_NAME
-                        Name of library(sample) that will be used as fouth
-                        column name
-  -s COL_DELIMITER, --col_delimiter COL_DELIMITER
-                        Delimiter to seperate the columns of the output file,
-                        default : tab( )
-  -o OFILE, --ofile OFILE
-                        Column wise output file with Tab seperated output
-                        filename of your choice
+usage: sam-per-ref-count.py [-h] [-i IFILE] [-s] [-r REF_COL_NAME]
+                            [-c CNT_COL_NAME] [-n OPT_COL_NAME]
+                            [-v OPT_COL_VAL] [-d DELIM]
 
+optional arguments:
+  -h, --help            show this help message and exit
+  -i IFILE, --ifile IFILE
+                        Input SAM/BAM file
+  -s, --sam             Input file format only if SAM file; default BAM format
+  -r REF_COL_NAME, --ref-col-name REF_COL_NAME
+                        Name of output column with reference ids, default:
+                        reference
+  -c CNT_COL_NAME, --cnt-col-name CNT_COL_NAME
+                        Name of output column with read count, default: count
+  -n OPT_COL_NAME, --opt-col-name OPT_COL_NAME
+                        Name of an optional column e.g. sample_name
+  -v OPT_COL_VAL, --opt-col-val OPT_COL_VAL
+                        Value for the optional column; same for all rows
+  -d DELIM, --delim DELIM
+                        Delimiter to separate the columns of the output file,
+                        default : TAB
