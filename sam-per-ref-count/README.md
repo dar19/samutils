@@ -1,7 +1,11 @@
-"sam-per-ref-count.py"
-Description : Count reads aligned on reference sequence in a SAM/BAM file.
-Below options are used as arguments in the script.
+# sam-per-ref-count.py
 
+## Description
+
+Count the number of reads that aligned on each of the reference sequences in a
+SAM/BAM file.
+
+```bash
 usage: sam-per-ref-count.py [-h] [-i IFILE] [-s] [-r REF_COL_NAME]
                             [-c CNT_COL_NAME] [-n OPT_COL_NAME]
                             [-v OPT_COL_VAL] [-d DELIM]
@@ -23,3 +27,4 @@ optional arguments:
   -d DELIM, --delim DELIM
                         Delimiter to separate the columns of the output file,
                         default : TAB
+```

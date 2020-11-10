@@ -4,6 +4,8 @@
 
 `sam-mark-dups`: finds SAM records with the same start and end position and marks them as duplicates.
 
+`sam-per-ref-count`: count number of reads aligned on each reference sequence.
+
 `sam-tag-to-fasta`: extract a SAM tag for each record and print it in FASTA format (useful for tags with sequences).
 
 `sam-tag-value-dist`: measures how many times each tag value is found in SAM file.
