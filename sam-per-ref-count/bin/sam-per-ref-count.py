@@ -2,15 +2,14 @@
 import pysam
 import argparse
 
-parser = argparse.ArgumentParser(description='Count reads aligned on each reference sequence in a SAM/BAM file')
-parser.add_argument("-i", "--ifile", help="Seq file name with read information as input in sam/bam format ")
-parser.add_argument("-s", "--sam", default="sam", action='store_true',
-    help="Input file format, either sam or bam; default sam format")
+parser = argparse.ArgumentParser(description='Count reads aligned on reference sequence in a SAM/BAM file')
+parser.add_argument("-i", "--ifile", help="Input SAM/BAM file")
+parser.add_argument("-s", "--sam", action='store_true', help="Input file format only if SAM file; default BAM format")
 parser.add_argument("-r", "--ref-col-name", default="reference", help="Name of output column with reference ids, default: reference")
 parser.add_argument("-c", "--cnt-col-name", default="count", help="Name of output column with read count, default: count")
 parser.add_argument("-n", "--opt-col-name", help="Name of an optional column e.g. sample_name")
 parser.add_argument("-v", "--opt-col-val", help="Value for the optional column; same for all rows")
-parser.add_argument("-d", "--delim", default="\t", help="Delimiter to seperate the columns of the output file, default : TAB")
+parser.add_argument("-d", "--delim", default="\t", help="Delimiter to separate the columns of the output file, default : TAB")
 args = parser.parse_args()
 
 ifiletype = "rb"
@@ -25,7 +24,7 @@ for seq in bamfile:
         continue
 
     reference = seq.reference_name
-    query_length = seq.query_length  #as per bam/sam ifile
+    query_length = seq.query_length
     if reference not in reference_counts:
         reference_counts[reference] = 0
     reference_counts[reference] += 1
@@ -38,7 +37,7 @@ if args.opt_col_name and args.opt_col_val:
     header += [args.opt_col_name]
 print(delim.join(header) + "\n")
 
-#print the contents (reference and counts) of file
+#print the contents of file
 for reference, count in reference_counts.items():
     row = [reference, str(count)]
     if args.opt_col_name and args.opt_col_val:
