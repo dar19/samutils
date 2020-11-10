@@ -15,3 +15,5 @@
 `sam-to-bigwig`: converts a SAM file to BIGWIG.
 
 `sam-to-collapsed`: finds SAM records with the same start and end position and keeps only one.
+
+`sam-per-ref-count.py`: Count reads aligned on reference sequence in a SAM/BAM file.
