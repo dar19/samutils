@@ -5,7 +5,7 @@ import re
 
 parser = argparse.ArgumentParser(description='Count reads aligned on reference sequence in a SAM/BAM file')
 parser.add_argument("-i", "--ifile", help="Input SAM/BAM file")
-parser.add_argument("-a", "--all-referenceids", action='store_true', help="Option for all reference-ids incld. zero count")
+parser.add_argument("-a", "--all-referenceids", action='store_true', help="Option to fetch all reference-ids incld. with zero count")
 parser.add_argument("-s", "--sam", action='store_true', help="Input file format only if SAM file; default BAM format")
 parser.add_argument("-r", "--ref-col-name", default="reference", help="Name of output column with reference ids, default: reference")
 parser.add_argument("-c", "--cnt-col-name", default="count", help="Name of output column with read count, default: count")
