@@ -55,5 +55,5 @@ print(delim.join(header_ofile) + "\n")
 for reference, count in reference_counts.items():
     row = [reference, str(count)]
     if args.opt_col_name and args.opt_col_val:
-        row += args.opt_col_val
+        row += [args.opt_col_val]
     print(delim.join(row))
