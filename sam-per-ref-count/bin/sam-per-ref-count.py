@@ -35,7 +35,7 @@ delim = args.delim
 header = [args.ref_col_name, args.cnt_col_name]
 if args.opt_col_name and args.opt_col_val:
     header += [args.opt_col_name]
-print(delim.join(header) + "\n")
+print(delim.join(header))
 
 #print the contents of file
 for reference, count in reference_counts.items():
