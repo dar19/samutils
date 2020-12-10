@@ -10,6 +10,7 @@ parser.add_argument("-c", "--cnt-col-name", default="count", help="Name of outpu
 parser.add_argument("-n", "--opt-col-name", help="Name of an optional column e.g. sample_name")
 parser.add_argument("-v", "--opt-col-val", help="Value for the optional column; same for all rows")
 parser.add_argument("-d", "--delim", default="\t", help="Delimiter to separate the columns of the output file, default : TAB")
+parser.add_argument("-x", "--no-zeros", action='store_true', help="Skip references with 0 reads")
 args = parser.parse_args()
 
 ifiletype = "rb"
@@ -28,6 +29,16 @@ for seq in bamfile:
     if reference not in reference_counts:
         reference_counts[reference] = 0
     reference_counts[reference] += 1
+
+# If transcripts with 0 counts are not explicitly excluded, then add them to
+# the dictionary. Assumes that the SAM header exists.
+if not args.no_zeros:
+    header = bamfile.header
+    if 'SQ' in header:
+        for elem in header['SQ']:
+            ref = elem['SN']
+            if ref not in reference_counts:
+                reference_counts[ref] = 0
 
 delim = args.delim
 
